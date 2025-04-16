@@ -128,5 +128,97 @@ class Wallet {
         
         return $transacciones;
     }
+    
+    // Obtener historial filtrado
+    public function obtenerHistorialFiltrado($usuario_id, $tipo = '', $desde = '', $hasta = '', $limite = 100) {
+        $usuario_id = (int)$usuario_id;
+        $limite = (int)$limite;
+        
+        $where = "WHERE usuario_id = $usuario_id";
+        
+        // Filtrar por tipo
+        if(!empty($tipo)) {
+            $tipo = limpiarDato($tipo);
+            $where .= " AND tipo = '$tipo'";
+        }
+        
+        // Filtrar por fechas
+        if(!empty($desde)) {
+            $desde = limpiarDato($desde);
+            $where .= " AND fecha >= '$desde 00:00:00'";
+        }
+        
+        if(!empty($hasta)) {
+            $hasta = limpiarDato($hasta);
+            $where .= " AND fecha <= '$hasta 23:59:59'";
+        }
+        
+        $sql = "SELECT id, tipo, monto, referencia, fecha 
+                FROM transacciones_wallet 
+                $where 
+                ORDER BY fecha DESC 
+                LIMIT $limite";
+        
+        $resultado = $this->conexion->query($sql);
+        $transacciones = [];
+        
+        while($fila = $resultado->fetch_assoc()) {
+            $transacciones[] = $fila;
+        }
+        
+        return $transacciones;
+    }
+    
+    // Obtener total de recargas
+    public function obtenerTotalRecargas($usuario_id) {
+        $usuario_id = (int)$usuario_id;
+        
+        $sql = "SELECT SUM(monto) as total 
+                FROM transacciones_wallet 
+                WHERE usuario_id = $usuario_id AND tipo = 'recarga'";
+        
+        $resultado = $this->conexion->query($sql);
+        $row = $resultado->fetch_assoc();
+        
+        return $row['total'] ?? 0;
+    }
+    
+    // Obtener total de compras
+    public function obtenerTotalCompras($usuario_id) {
+        $usuario_id = (int)$usuario_id;
+        
+        $sql = "SELECT SUM(monto) as total 
+                FROM transacciones_wallet 
+                WHERE usuario_id = $usuario_id AND tipo = 'compra'";
+        
+        $resultado = $this->conexion->query($sql);
+        $row = $resultado->fetch_assoc();
+        
+        return $row['total'] ?? 0;
+    }
+    
+    // Obtener estadísticas del último mes
+    public function obtenerEstadisticasMes($usuario_id) {
+        $usuario_id = (int)$usuario_id;
+        $primer_dia_mes = date('Y-m-01');
+        $ultimo_dia_mes = date('Y-m-t');
+        
+        $sql = "SELECT 
+                    COUNT(*) as total_transacciones,
+                    SUM(CASE WHEN tipo = 'recarga' THEN monto ELSE 0 END) as total_recargas,
+                    SUM(CASE WHEN tipo = 'compra' THEN monto ELSE 0 END) as total_compras
+                FROM transacciones_wallet 
+                WHERE usuario_id = $usuario_id 
+                AND fecha BETWEEN '$primer_dia_mes 00:00:00' AND '$ultimo_dia_mes 23:59:59'";
+        
+        $resultado = $this->conexion->query($sql);
+        $row = $resultado->fetch_assoc();
+        
+        return [
+            'total_transacciones' => $row['total_transacciones'] ?? 0,
+            'total_recargas' => $row['total_recargas'] ?? 0,
+            'total_compras' => $row['total_compras'] ?? 0
+        ];
+    }
 }
 ?>
