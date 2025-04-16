@@ -1,0 +1,17 @@
+# Archivos de configuración con credenciales
+includes/config.php
+
+# Archivos y carpetas generados por el sistema
+logs/
+*.log
+.htaccess
+
+# Archivos de caché y sesión
+*.cache
+/sessions/
+
+# Dependencias y archivos temporales
+node_modules/
+vendor/
+.tmp/
+.DS_Store
