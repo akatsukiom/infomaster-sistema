@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # InfoMaster - Sistema de Entrega Automática
 
 InfoMaster es un sistema de entrega automática para productos digitales con carrito de compras y sistema de wallet integrado. Este sistema permite a los usuarios comprar productos digitales y recibir códigos de acceso de forma inmediata tras el pago.
@@ -27,3 +28,6 @@ InfoMaster es un sistema de entrega automática para productos digitales con car
 1. **Clonar el repositorio**
    ```bash
    git clone https://github.com/akatsukiom/infomaster-sistema.git
+=======
+# infomaster-sistema
+>>>>>>> f8362350aca7012a96e9b38e731d9eb88436998b
