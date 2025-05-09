@@ -1,16 +1,22 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 define('ACCESO_PERMITIDO', true);
-require_once '../../includes/config.php';
-require_once '../../includes/funciones.php';
+require_once __DIR__ . '/../../includes/config.php';
+require_once __DIR__ . '/../../includes/funciones.php';
 require_once 'modelo.php';
 
 // Si ya está logueado, redirigir
 if(estaLogueado()) {
-    redireccionar('perfil.php');
+    redireccionar('perfil');
 }
 
 $usuario = new Usuario($conexion);
 $errores = [];
+$nombre = '';
+$email = '';
 
 // Procesar formulario
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -48,21 +54,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             mostrarMensaje($resultado['success'], 'success');
             // Auto login después de registro
             $usuario->login($email, $password);
-            redireccionar('perfil.php');
+            redireccionar('perfil');
         } else {
-            $errores[] = $resultado['error'];
+            $errores[] = isset($resultado['error']) ? $resultado['error'] : 'Error desconocido durante el registro';
         }
     }
 }
 
 // Incluir header
 $titulo = "Registro";
-include '../../includes/header.php';
+include __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container">
-    <div class="registro-form">
-        <h1>Crear una cuenta</h1>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Crear una cuenta</h1>
+            <p>Regístrate para acceder a nuestros productos digitales</p>
+        </div>
         
         <?php if(!empty($errores)): ?>
             <div class="errores">
@@ -72,20 +81,21 @@ include '../../includes/header.php';
             </div>
         <?php endif; ?>
         
-        <form method="POST" action="">
+        <form method="POST" action="" class="registro-form">
             <div class="form-group">
                 <label for="nombre">Nombre completo</label>
-                <input type="text" id="nombre" name="nombre" value="<?php echo $nombre ?? ''; ?>" required>
+                <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($nombre); ?>" required>
             </div>
             
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="<?php echo $email ?? ''; ?>" required>
+                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
             </div>
             
             <div class="form-group">
                 <label for="password">Contraseña</label>
                 <input type="password" id="password" name="password" required>
+                <small>Mínimo 6 caracteres</small>
             </div>
             
             <div class="form-group">
@@ -96,8 +106,10 @@ include '../../includes/header.php';
             <button type="submit" class="btn btn-primary">Registrarse</button>
         </form>
         
-        <p>¿Ya tienes cuenta? <a href="login.php">Iniciar sesión</a></p>
+        <div class="form-footer">
+            <p>¿Ya tienes cuenta? <a href="<?= URL_SITIO ?>login">Iniciar sesión</a></p>
+        </div>
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>

@@ -1,278 +1,227 @@
 <?php
+// Asegurar acceso y cargar dependencias
 define('ACCESO_PERMITIDO', true);
 require_once 'includes/config.php';
 require_once 'includes/funciones.php';
 require_once 'modulos/productos/modelo.php';
 require_once 'modulos/carrito/modelo.php';
 
-// Obtener productos destacados
-$producto = new Producto($conexion);
-$destacados = $producto->obtenerDestacados(8);
+// 1) Productos destacados
+$productoModel = new Producto($conexion);
+$destacados    = $productoModel->obtenerDestacados(8);
 
-// Obtener categorías
-$sql = "SELECT * FROM categorias ORDER BY nombre";
-$resultado_categorias = $conexion->query($sql);
-$categorias = [];
+// 2) Categorías
+$sql  = "SELECT * FROM categorias ORDER BY nombre";
+$rs   = $conexion->query($sql);
+$cats = $rs->fetch_all(MYSQLI_ASSOC);
 
-while($fila = $resultado_categorias->fetch_assoc()) {
-    $categorias[] = $fila;
-}
-
-// Incluir header
+// 3) Incluir header
 $titulo = "Inicio - Productos Digitales";
 include 'includes/header.php';
 ?>
 
-<!-- Hero Section -->
+<!-- HERO -->
 <section class="hero">
-    <div class="container">
-        <h1>Tu plataforma de productos digitales</h1>
-        <p>Acceso inmediato a nuestro catálogo de productos con entrega automática y sistema de wallet.</p>
-        <div class="hero-buttons">
-            <a href="productos.php" class="btn">Ver productos</a>
-            <?php if(!estaLogueado()): ?>
-                <a href="modulos/usuarios/registro.php" class="btn btn-secondary">Crear cuenta</a>
-            <?php else: ?>
-                <a href="modulos/wallet/recargar.php" class="btn btn-secondary">Recargar wallet</a>
-            <?php endif; ?>
+  <div class="container">
+    <div class="hero-content">
+      <h1>Tu plataforma de productos digitales</h1>
+      <p>Acceso inmediato y seguro a nuestro catálogo de productos con entrega automática y wallet integrado.</p>
+      <div class="hero-buttons">
+        <a href="<?= URL_SITIO ?>productos" class="btn">Ver productos</a>
+        <?php if (!estaLogueado()): ?>
+          <a href="<?= URL_SITIO ?>usuarios/registro" class="btn btn-outline">Crear cuenta</a>
+        <?php else: ?>
+          <a href="<?= URL_SITIO ?>wallet/recargar" class="btn btn-outline">Recargar wallet</a>
+        <?php endif; ?>
+      </div>
+      <div class="hero-cards">
+        <div class="hero-card">
+          <i class="fas fa-rocket"></i>
+          <h3>Entrega inmediata</h3>
+          <p>Recibe tu producto al instante</p>
         </div>
+        <div class="hero-card">
+          <i class="fas fa-lock"></i>
+          <h3>100% Seguro</h3>
+          <p>Transacciones protegidas</p>
+        </div>
+        <div class="hero-card">
+          <i class="fas fa-headset"></i>
+          <h3>Soporte 24/7</h3>
+          <p>Estamos para ayudarte</p>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- Featured Products -->
+<!-- DESTACADOS -->
 <section class="featured">
-    <div class="container">
-        <div class="section-title">
-            <h2>Productos Destacados</h2>
-            <p>Los más vendidos de nuestro catálogo</p>
-        </div>
-        
-        <div class="products">
-            <?php if(empty($destacados)): ?>
-                <p class="no-products">No hay productos destacados disponibles en este momento.</p>
-            <?php else: ?>
-                <?php foreach($destacados as $producto): ?>
-                    <div class="product">
-                        <img src="<?php echo $producto['imagen'] ?: 'img/producto-default.jpg'; ?>" alt="<?php echo $producto['nombre']; ?>" class="product-img">
-                        <div class="product-info">
-                            <span class="product-category"><?php echo $producto['categoria']; ?></span>
-                            <h3 class="product-title"><?php echo $producto['nombre']; ?></h3>
-                            <p><?php echo substr($producto['descripcion'], 0, 60) . (strlen($producto['descripcion']) > 60 ? '...' : ''); ?></p>
-                            <div class="product-price"><?php echo MONEDA . number_format($producto['precio'], 2); ?></div>
-                            <div class="product-actions">
-                                <a href="modulos/productos/detalle.php?id=<?php echo $producto['id']; ?>" class="btn">Ver detalles</a>
-                                <a href="modulos/carrito/agregar.php?id=<?php echo $producto['id']; ?>&redirigir=../../index.php" class="btn btn-secondary">Comprar</a>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-        
-        <div class="view-all">
-            <a href="productos.php" class="btn btn-outline">Ver todos los productos</a>
-        </div>
+  <div class="container">
+    <div class="section-title">
+      <h2>Productos Destacados</h2>
+      <p>Los más vendidos de nuestro catálogo</p>
     </div>
+    <div class="products">
+      <?php if (empty($destacados)): ?>
+        <p class="no-products">No hay productos destacados disponibles.</p>
+      <?php else: ?>
+        <?php foreach ($destacados as $prod):
+          $rutaProdImg = !empty($prod['imagen'])
+            ? URL_SITIO . ltrim($prod['imagen'], '/')
+            : URL_SITIO . 'img/producto-default.jpg';
+        ?>
+        <div class="product">
+          <?php if ($prod['destacado']): ?>
+            <span class="badge">Destacado</span>
+          <?php endif; ?>
+          <img src="<?= htmlspecialchars($rutaProdImg) ?>" alt="<?= htmlspecialchars($prod['nombre']) ?>" class="product-img">
+          <div class="info">
+            <span class="category"><?= htmlspecialchars($prod['categoria']) ?></span>
+            <h3 class="title"><?= htmlspecialchars($prod['nombre']) ?></h3>
+            <p class="description"><?= htmlspecialchars(substr($prod['descripcion'], 0, 60)) ?><?= strlen($prod['descripcion']) > 60 ? '…' : '' ?></p>
+            <div class="price"><?= MONEDA . number_format($prod['precio'], 2) ?></div>
+            <div class="actions">
+              <a href="<?= URL_SITIO ?>productos/<?= $prod['id'] ?>" class="btn">Ver detalles</a>
+              <a href="<?= URL_SITIO ?>carrito/agregar/<?= $prod['id'] ?>?redirigir=/" class="btn btn-secondary">Comprar</a>
+            </div>
+          </div>
+        </div>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </div>
+    <div class="view-all">
+      <a href="<?= URL_SITIO ?>productos" class="btn btn-outline">Ver todos los productos</a>
+    </div>
+  </div>
 </section>
 
-<!-- Categories -->
+<!-- CATEGORÍAS -->
 <section class="categories">
-    <div class="container">
-        <div class="section-title">
-            <h2>Categorías</h2>
-            <p>Explora nuestros productos por categoría</p>
-        </div>
-        
-        <div class="category-cards">
-            <?php if(empty($categorias)): ?>
-                <p class="no-categories">No hay categorías disponibles en este momento.</p>
-            <?php else: ?>
-                <?php foreach($categorias as $categoria): ?>
-                    <div class="category-card">
-                        <img src="<?php echo $categoria['imagen'] ?: 'img/categoria-default.jpg'; ?>" alt="<?php echo $categoria['nombre']; ?>">
-                        <h3><?php echo $categoria['nombre']; ?></h3>
-                        <p><?php echo substr($categoria['descripcion'], 0, 50) . (strlen($categoria['descripcion']) > 50 ? '...' : ''); ?></p>
-                        <a href="productos.php?categoria=<?php echo $categoria['id']; ?>" class="btn btn-outline">Ver productos</a>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
+  <div class="container">
+    <div class="section-title">
+      <h2>Categorías</h2>
+      <p>Explora por categoría</p>
     </div>
+    <div class="cards">
+      <?php if (empty($cats)): ?>
+        <p>No hay categorías disponibles.</p>
+      <?php else: ?>
+        <?php foreach ($cats as $cat):
+          $rutaCatImg = !empty($cat['imagen'])
+            ? URL_SITIO . ltrim($cat['imagen'], '/')
+            : URL_SITIO . 'img/categoria-default.jpg';
+        ?>
+        <div class="card">
+          <img src="<?= htmlspecialchars($rutaCatImg) ?>" alt="<?= htmlspecialchars($cat['nombre']) ?>">
+          <h3><?= htmlspecialchars($cat['nombre']) ?></h3>
+          <p><?= htmlspecialchars(substr($cat['descripcion'], 0, 50)) ?><?= strlen($cat['descripcion']) > 50 ? '…' : '' ?></p>
+          <a href="<?= URL_SITIO ?>productos?categoria=<?= $cat['id'] ?>" class="btn btn-outline">Ver productos</a>
+        </div>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </div>
+  </div>
 </section>
 
-<!-- How it works -->
+<!-- CÓMO FUNCIONA -->
 <section class="how-it-works">
-    <div class="container">
-        <div class="section-title">
-            <h2>Cómo funciona</h2>
-            <p>Compra fácil y rápida en 4 simples pasos</p>
-        </div>
-        
-        <div class="steps">
-            <div class="step">
-                <div class="step-icon">1</div>
-                <h3>Crea tu cuenta</h3>
-                <p>Regístrate en nuestra plataforma y accede a tu panel de usuario.</p>
-            </div>
-            
-            <div class="step">
-                <div class="step-icon">2</div>
-                <h3>Recarga tu wallet</h3>
-                <p>Añade saldo a tu wallet mediante nuestros métodos de pago seguros.</p>
-            </div>
-            
-            <div class="step">
-                <div class="step-icon">3</div>
-                <h3>Elige tu producto</h3>
-                <p>Navega por nuestro catálogo y selecciona lo que necesitas.</p>
-            </div>
-            
-            <div class="step">
-                <div class="step-icon">4</div>
-                <h3>Acceso inmediato</h3>
-                <p>Recibe acceso automático a tu compra sin esperas.</p>
-            </div>
-        </div>
+  <div class="container">
+    <div class="section-title">
+      <h2>Cómo funciona</h2>
+      <p>Compra fácil y rápida en 4 sencillos pasos</p>
     </div>
+    <div class="steps">
+      <?php
+      $steps = [
+        ['icon' => '1', 'title' => 'Crea tu cuenta', 'desc' => 'Regístrate y accede a tu panel.'],
+        ['icon' => '2', 'title' => 'Recarga tu wallet', 'desc' => 'Añade saldo con nuestros métodos.'],
+        ['icon' => '3', 'title' => 'Elige tu producto', 'desc' => 'Selecciona lo que necesitas.'],
+        ['icon' => '4', 'title' => 'Acceso inmediato', 'desc' => 'Disfruta tu compra al instante.'],
+      ];
+      foreach ($steps as $s): ?>
+        <div class="step">
+          <div class="step-icon"><?= $s['icon'] ?></div>
+          <h3><?= $s['title'] ?></h3>
+          <p><?= $s['desc'] ?></p>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
 </section>
 
-<!-- Testimonials -->
+<!-- TESTIMONIOS -->
 <section class="testimonials">
-    <div class="container">
-        <div class="section-title">
-            <h2>Testimonios</h2>
-            <p>Lo que dicen nuestros clientes</p>
-        </div>
-        
-        <div class="testimonial-slider">
-            <div class="testimonial">
-                <div class="testimonial-content">
-                    <p>"Excelente servicio, los productos se entregan al instante y la plataforma es muy fácil de usar. 100% recomendado."</p>
-                </div>
-                <div class="testimonial-author">
-                    <img src="img/testimonial-1.jpg" alt="José Rodríguez">
-                    <div>
-                        <h4>José Rodríguez</h4>
-                        <span>Cliente desde 2023</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="testimonial">
-                <div class="testimonial-content">
-                    <p>"La mejor plataforma para comprar productos digitales. El sistema de wallet es muy práctico y el soporte técnico siempre responde rápido."</p>
-                </div>
-                <div class="testimonial-author">
-                    <img src="img/testimonial-2.jpg" alt="María Gómez">
-                    <div>
-                        <h4>María Gómez</h4>
-                        <span>Cliente desde 2024</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="testimonial">
-                <div class="testimonial-content">
-                    <p>"He probado varias plataformas similares y esta es sin duda la mejor. Precios competitivos y entrega inmediata."</p>
-                </div>
-                <div class="testimonial-author">
-                    <img src="img/testimonial-3.jpg" alt="Carlos Mendoza">
-                    <div>
-                        <h4>Carlos Mendoza</h4>
-                        <span>Cliente desde 2022</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="section-title">
+      <h2>Testimonios</h2>
+      <p>Lo que dicen nuestros clientes</p>
     </div>
+    <div class="testimonial-slider">
+      <?php
+      $testigos = [
+        ['text' => 'Excelente servicio... plataforma muy fácil de usar.', 'name' => 'José Rodríguez', 'when' => '2023', 'img' => 'img/testimonial-1.jpg'],
+        ['text' => 'La mejor plataforma... soporte técnico responde rápido.', 'name' => 'María Gómez', 'when' => '2024', 'img' => 'img/testimonial-2.jpg'],
+        ['text' => 'Sin duda la mejor. Precios competitivos y entrega inmediata.', 'name' => 'Carlos Mendoza', 'when' => '2022', 'img' => 'img/testimonial-3.jpg'],
+      ];
+      foreach ($testigos as $t):
+        $imgTest = URL_SITIO . ltrim($t['img'], '/');
+      ?>
+        <div class="testimonial">
+          <p>"<?= htmlspecialchars($t['text']) ?>"</p>
+          <div class="author">
+            <img src="<?= htmlspecialchars($imgTest) ?>" alt="<?= htmlspecialchars($t['name']) ?>">
+            <div>
+              <h4><?= htmlspecialchars($t['name']) ?></h4>
+              <span>Cliente desde <?= $t['when'] ?></span>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+    <div class="slider-indicators">
+      <?php foreach (array_keys($testigos) as $i): ?>
+        <span data-index="<?= $i ?>"<?= $i === 0 ? ' class="active"' : '' ?>></span>
+      <?php endforeach; ?>
+    </div>
+  </div>
 </section>
 
-<!-- FAQ Section -->
-<section class="faq">
-    <div class="container">
-        <div class="section-title">
-            <h2>Preguntas Frecuentes</h2>
-            <p>Respuestas a las dudas más comunes</p>
-        </div>
-        
-        <div class="faq-accordion">
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>¿Cómo funciona la entrega automática?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Una vez realizada la compra, el sistema te proporciona automáticamente un código de acceso único. Este código te permite acceder inmediatamente al producto digital que has adquirido, sin tiempos de espera ni intervención manual.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>¿Cómo puedo recargar mi wallet?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Puedes recargar tu wallet a través de varios métodos de pago, incluyendo transferencia bancaria, depósito y PayPal. Una vez procesado tu pago, el saldo se reflejará inmediatamente en tu cuenta.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>¿Los productos tienen garantía?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Sí, todos nuestros productos tienen garantía. Si experimentas algún problema con tu compra, contáctanos dentro de los primeros 7 días y te ayudaremos a resolverlo o te ofreceremos un reembolso.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>¿Puedo usar mi compra en múltiples dispositivos?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Depende del tipo de producto adquirido. En la descripción de cada producto encontrarás información detallada sobre las limitaciones de uso. En general, la mayoría de nuestros productos pueden usarse en múltiples dispositivos con el mismo código de acceso.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Call to Action -->
+<!-- CTA FINAL -->
 <section class="cta">
-    <div class="container">
-        <h2>¿Listo para empezar?</h2>
-        <p>Únete a miles de clientes satisfechos y comienza a disfrutar de nuestros productos digitales.</p>
-        <div class="cta-buttons">
-            <?php if(!estaLogueado()): ?>
-                <a href="modulos/usuarios/registro.php" class="btn btn-large">Crear cuenta ahora</a>
-            <?php else: ?>
-                <a href="productos.php" class="btn btn-large">Explorar productos</a>
-            <?php endif; ?>
-        </div>
+  <div class="container">
+    <h2>¿Listo para empezar?</h2>
+    <p>Únete a miles de clientes satisfechos hoy mismo.</p>
+    <div class="cta-buttons">
+      <?php if (!estaLogueado()): ?>
+        <a href="<?= URL_SITIO ?>usuarios/registro" class="btn">Crear cuenta ahora</a>
+      <?php else: ?>
+        <a href="<?= URL_SITIO ?>productos" class="btn">Explorar productos</a>
+      <?php endif; ?>
+      <a href="<?= URL_SITIO ?>como-funciona" class="btn btn-outline">Saber más</a>
     </div>
+  </div>
 </section>
-
-<script>
-    // Script para FAQ accordion
-    document.querySelectorAll('.faq-question').forEach(question => {
-        question.addEventListener('click', () => {
-            const answer = question.nextElementSibling;
-            const toggle = question.querySelector('.faq-toggle');
-            
-            // Alternar visibilidad de la respuesta
-            if (answer.style.maxHeight) {
-                answer.style.maxHeight = null;
-                toggle.textContent = '+';
-            } else {
-                answer.style.maxHeight = answer.scrollHeight + 'px';
-                toggle.textContent = '-';
-            }
-        });
-    });
-
-    // Aquí podrías añadir un script para el slider de testimonios si es necesario
-</script>
 
 <?php include 'includes/footer.php'; ?>
+
+<!-- JS SLIDER -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.querySelector('.testimonial-slider');
+    const items  = slider.children;
+    const dots   = document.querySelectorAll('.slider-indicators span');
+    let idx      = 0;
+
+    function show(i) {
+      slider.style.transform = `translateX(-${i * 100}%)`;
+      dots.forEach((d,j) => d.classList.toggle('active', i===j));
+      idx = i;
+    }
+
+    dots.forEach(d => d.addEventListener('click', () => show(+d.dataset.index)));
+    let auto = setInterval(() => show((idx+1)%items.length), 5000);
+    slider.addEventListener('mouseenter', () => clearInterval(auto));
+    slider.addEventListener('mouseleave', () => auto = setInterval(() => show((idx+1)%items.length), 5000));
+  });
+</script>

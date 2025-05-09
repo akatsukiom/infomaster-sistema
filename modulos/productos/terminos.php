@@ -1,5 +1,7 @@
 <?php
-define('ACCESO_PERMITIDO', true);
+if (!defined('ACCESO_PERMITIDO')) {
+    define('ACCESO_PERMITIDO', true);
+}
 require_once 'includes/config.php';
 require_once 'includes/funciones.php';
 
