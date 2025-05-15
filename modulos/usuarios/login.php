@@ -1,106 +1,82 @@
 <?php
 define('ACCESO_PERMITIDO', true);
-require_once '../../includes/config.php';
-require_once '../../includes/funciones.php';
-require_once 'modelo.php';
+require_once __DIR__ . '/../../includes/config.php';
+require_once __DIR__ . '/../../includes/funciones.php';
 
-// Si ya está logueado, redirigir
-if(estaLogueado()) {
-    // Redirigir a donde se indicó después del login, o al perfil por defecto
-    $redirigir = isset($_SESSION['redirigir_despues_login']) ? $_SESSION['redirigir_despues_login'] : 'perfil.php';
-    unset($_SESSION['redirigir_despues_login']);
-    redireccionar($redirigir);
+// Si ya está logueado, ir al perfil
+if (estaLogueado()) {
+    redireccionar('perfil');
 }
 
-$usuario = new Usuario($conexion);
 $errores = [];
-
-// Procesar formulario
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = limpiarDato($_POST['email'] ?? '');
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = limpiarDato($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-    $recordar = isset($_POST['recordar']) ? true : false;
-    
-    // Validaciones
-    if(empty($email) || !validarEmail($email)) {
-        $errores[] = "Por favor ingresa un email válido";
-    }
-    
-    if(empty($password)) {
-        $errores[] = "La contraseña es obligatoria";
-    }
-    
-    // Si no hay errores, intentar login
-    if(empty($errores)) {
-        $resultado = $usuario->login($email, $password);
-        
-        if(isset($resultado['success'])) {
-            // Si seleccionó "recordar", guardar cookie
-            if($recordar) {
-                setcookie('email', $email, time() + (86400 * 30), "/"); // 30 días
+
+    // 1) Validar campos
+    if (empty($email))    $errores[] = "El email es obligatorio";
+    if (empty($password)) $errores[] = "La contraseña es obligatoria";
+
+    // 2) Si no hay errores, buscar usuario
+    if (empty($errores)) {
+        $stmt = $conexion->prepare(
+            "SELECT id, nombre, password, rol, saldo 
+               FROM usuarios 
+              WHERE email = ? 
+              LIMIT 1"
+        );
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        if ($res->num_rows === 1) {
+            $usuario = $res->fetch_assoc();
+            // 3) Verificar contraseña
+            if (password_verify($password, $usuario['password'])) {
+                // 4) Guardar datos en la sesión, ¡incluyendo el rol!
+                $_SESSION['usuario_id']     = $usuario['id'];
+                $_SESSION['usuario_nombre'] = $usuario['nombre'];
+                $_SESSION['usuario_rol']    = $usuario['rol'];  // <- Esto es clave
+                $_SESSION['usuario_saldo']   = (float) $usuario['saldo'];  // <— Esto es clave
+
+                // 5) Redirigir al panel o perfil
+                redireccionar('perfil');
+            } else {
+                $errores[] = "Contraseña incorrecta";
             }
-            
-            mostrarMensaje($resultado['success'], 'success');
-            
-            // Redirigir a donde se indicó después del login, o al perfil por defecto
-            $redirigir = isset($_SESSION['redirigir_despues_login']) ? $_SESSION['redirigir_despues_login'] : 'perfil.php';
-            unset($_SESSION['redirigir_despues_login']);
-            redireccionar($redirigir);
         } else {
-            $errores[] = $resultado['error'];
+            $errores[] = "No existe ningún usuario con ese email";
         }
+        $stmt->close();
     }
 }
 
-// Obtener email de cookie si existe
-$email_cookie = isset($_COOKIE['email']) ? $_COOKIE['email'] : '';
-
-// Incluir header
-$titulo = "Iniciar Sesión";
-include '../../includes/header.php';
+// Incluir tu header y mostrar el form de login
+$titulo = "Iniciar sesión";
+include __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container">
-    <div class="auth-container">
-        <div class="auth-header">
-            <h1>Iniciar Sesión</h1>
-            <p>Accede a tu cuenta para comprar o administrar tus productos</p>
-        </div>
-        
-        <?php if(!empty($errores)): ?>
-            <div class="errores">
-                <?php foreach($errores as $error): ?>
-                    <p><?php echo $error; ?></p>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-        
-        <form method="POST" action="" class="login-form">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="<?php echo $email_cookie; ?>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
-            <div class="remember-forgot">
-                <div class="remember-me">
-                    <input type="checkbox" id="recordar" name="recordar" <?php echo $email_cookie ? 'checked' : ''; ?>>
-                    <label for="recordar">Recordarme</label>
-                </div>
-                <a href="recuperar.php">¿Olvidaste tu contraseña?</a>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-        </form>
-        
-        <div class="form-footer">
-            <p>¿No tienes una cuenta? <a href="registro.php">Regístrate ahora</a></p>
-        </div>
+  <h1>Iniciar sesión</h1>
+  <?php if ($errores): ?>
+    <div class="errores">
+      <?php foreach ($errores as $e): ?>
+        <p><?= htmlspecialchars($e) ?></p>
+      <?php endforeach; ?>
     </div>
+  <?php endif; ?>
+
+  <form method="POST" action="">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn">Iniciar sesión</button>
+  </form>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>

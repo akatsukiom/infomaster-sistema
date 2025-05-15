@@ -1,127 +1,159 @@
 <?php
-define('ACCESO_PERMITIDO', true);
-require_once 'includes/config.php';
-require_once 'includes/funciones.php';
-require_once 'modulos/productos/modelo.php';
-require_once 'modulos/carrito/modelo.php';
+// public_html/modulos/productos/productos.php
 
-// Filtros
-$categoria_id = isset($_GET['categoria']) ? (int)$_GET['categoria'] : null;
-$busqueda = isset($_GET['busqueda']) ? limpiarDato($_GET['busqueda']) : '';
-$orden = isset($_GET['orden']) ? limpiarDato($_GET['orden']) : 'nombre_asc';
+// Mostrar errores en desarrollo (quítalo en producción)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Obtener productos según filtros
-$producto = new Producto($conexion);
-$productos = $producto->obtenerTodos($categoria_id);
-
-// Aplicar búsqueda si existe
-if(!empty($busqueda)) {
-    $productos = array_filter($productos, function($p) use ($busqueda) {
-        return stripos($p['nombre'], $busqueda) !== false || 
-               stripos($p['descripcion'], $busqueda) !== false;
-    });
+// 1) Permitir el acceso (evitar accesos directos)
+if (!defined('ACCESO_PERMITIDO')) {
+    define('ACCESO_PERMITIDO', true);
 }
 
-// Aplicar ordenamiento
-usort($productos, function($a, $b) use ($orden) {
-    switch($orden) {
-        case 'precio_asc':
-            return $a['precio'] - $b['precio'];
-        case 'precio_desc':
-            return $b['precio'] - $a['precio'];
-        case 'nombre_desc':
-            return strcmp($b['nombre'], $a['nombre']);
-        case 'nombre_asc':
-        default:
-            return strcmp($a['nombre'], $b['nombre']);
-    }
-});
+// 2) Cargar configuración, utilidades y modelo
+require_once __DIR__ . '/../../includes/config.php';
+require_once __DIR__ . '/../../includes/funciones.php';
+require_once __DIR__ . '/modelo.php';
 
-// Obtener categorías para el filtro
-$sql = "SELECT * FROM categorias ORDER BY nombre";
-$resultado_categorias = $conexion->query($sql);
-$categorias = [];
+// 3) Instanciar y obtener todos los productos
+$modelo    = new Producto($conexion);
+$productos = $modelo->obtenerTodos();
 
-while($fila = $resultado_categorias->fetch_assoc()) {
-    $categorias[] = $fila;
-}
-
-// Incluir header
-$titulo = "Productos";
-include 'includes/header.php';
+// 4) Título de la página
+$titulo = "Nuestros Productos";
+include __DIR__ . '/../../includes/header.php';
 ?>
 
+<!-- Estilos específicos para el grid y tarjetas -->
+<style>
+  .productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 30px;
+    margin: 30px 0;
+  }
+
+  .tarjeta-producto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .tarjeta-contenido {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tarjeta-imagen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .btn-comprar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255,255,255,0.9);
+    color: #000;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .btn-agregar-chico {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255,255,255,0.8);
+    color: #000;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    text-decoration: none;
+  }
+
+  .producto-nombre {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 10px 0 5px;
+    color: #333;
+  }
+
+  .producto-precio {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+  }
+</style>
+
 <div class="container">
-    <div class="productos-container">
-        <h1>Nuestros Productos</h1>
-        
-        <div class="productos-grid">
-            <div class="filtros-sidebar">
-                <div class="filtros-header">
-                    <h3>Filtros</h3>
-                    <button class="btn-small btn-outline filtros-reset">Limpiar</button>
-                </div>
-                
-                <form method="GET" action="" class="product-filters">
-                    <div class="filtro-grupo">
-                        <label for="busqueda">Buscar:</label>
-                        <input type="text" id="busqueda" name="busqueda" value="<?php echo $busqueda; ?>" placeholder="Nombre o descripción">
-                    </div>
-                    
-                    <div class="filtro-grupo">
-                        <label for="categoria">Categoría:</label>
-                        <select id="categoria" name="categoria">
-                            <option value="">Todas las categorías</option>
-                            <?php foreach($categorias as $cat): ?>
-                                <option value="<?php echo $cat['id']; ?>" <?php echo $categoria_id == $cat['id'] ? 'selected' : ''; ?>>
-                                    <?php echo $cat['nombre']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <div class="filtro-grupo">
-                        <label for="orden">Ordenar por:</label>
-                        <select id="orden" name="orden">
-                            <option value="nombre_asc" <?php echo $orden == 'nombre_asc' ? 'selected' : ''; ?>>Nombre (A-Z)</option>
-                            <option value="nombre_desc" <?php echo $orden == 'nombre_desc' ? 'selected' : ''; ?>>Nombre (Z-A)</option>
-                            <option value="precio_asc" <?php echo $orden == 'precio_asc' ? 'selected' : ''; ?>>Precio (menor a mayor)</option>
-                            <option value="precio_desc" <?php echo $orden == 'precio_desc' ? 'selected' : ''; ?>>Precio (mayor a menor)</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="btn">Aplicar filtros</button>
-                </form>
-            </div>
-            
-            <div class="productos-lista">
-                <?php if(empty($productos)): ?>
-                    <div class="no-productos">
-                        <p>No se encontraron productos que coincidan con tu búsqueda.</p>
-                        <a href="productos.php" class="btn btn-outline">Ver todos los productos</a>
-                    </div>
-                <?php else: ?>
-                    <div class="products">
-                        <?php foreach($productos as $producto): ?>
-                            <div class="product">
-                                <img src="<?php echo $producto['imagen'] ?: 'img/producto-default.jpg'; ?>" alt="<?php echo $producto['nombre']; ?>" class="product-img">
-                                <div class="product-info">
-                                    <span class="product-category"><?php echo $producto['categoria']; ?></span>
-                                    <h3 class="product-title"><?php echo $producto['nombre']; ?></h3>
-                                    <p><?php echo substr($producto['descripcion'], 0, 60) . (strlen($producto['descripcion']) > 60 ? '...' : ''); ?></p>
-                                    <div class="product-price"><?php echo MONEDA . number_format($producto['precio'], 2); ?></div>
-                                    <div class="product-actions">
-                                        <a href="modulos/productos/detalle.php?id=<?php echo $producto['id']; ?>" class="btn">Ver detalles</a>
-                                        <a href="modulos/carrito/agregar.php?id=<?php echo $producto['id']; ?>&redirigir=../../productos.php" class="btn btn-secondary">Comprar</a>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
+  <h1><?= htmlspecialchars($titulo) ?></h1>
+
+  <?php if (empty($productos)): ?>
+    <p>No hay productos para mostrar.</p>
+  <?php else: ?>
+    <div class="productos-grid">
+      <?php foreach ($productos as $p):
+        // Determinar color de fondo según nombre
+        $bgColor = '#000';
+        if (stripos($p['nombre'], 'spotify') !== false)     $bgColor = '#1DB954';
+        elseif (stripos($p['nombre'], 'netflix') !== false) $bgColor = '#E50914';
+        elseif (stripos($p['nombre'], 'amazon') !== false)  $bgColor = '#00A8E1';
+        elseif (stripos($p['nombre'], 'youtube') !== false) $bgColor = '#FF0000';
+        elseif (stripos($p['nombre'], 'disney') !== false)  $bgColor = '#0E0B16';
+        elseif (stripos($p['nombre'], 'vix') !== false)     $bgColor = '#FFA500';
+      ?>
+        <div class="tarjeta-producto">
+          <div class="tarjeta-contenido" style="background-color: <?= $bgColor ?>;">
+            <!-- Imagen -->
+            <img
+              src="<?= URL_SITIO . ($p['imagen'] ?: 'img/producto-default.jpg') ?>"
+              alt="<?= htmlspecialchars($p['nombre']) ?>"
+              class="tarjeta-imagen"
+            >
+
+            <!-- Botón pequeño Agregar al carrito -->
+            <a href="<?= URL_SITIO ?>modulos/carrito/agregar.php?id=<?= $p['id'] ?>&redirigir=carrito/ver"
+               class="btn-agregar-chico"
+               title="Agregar al carrito">
+               🛒
+            </a>
+
+            <!-- Botón grande Comprar -->
+            <a href="<?= URL_SITIO ?>detalle?id=<?= $p['id'] ?>"
+               class="btn-comprar">
+               Comprar
+            </a>
+          </div>
+
+          <!-- Nombre y precio -->
+          <h3 class="producto-nombre"><?= htmlspecialchars($p['nombre']) ?></h3>
+          <div class="producto-precio">
+            <?= MONEDA . number_format($p['precio'], 2) ?>
+          </div>
         </div>
+      <?php endforeach; ?>
     </div>
+  <?php endif; ?>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
