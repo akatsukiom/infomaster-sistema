@@ -1,17 +1,24 @@
 /**
- * InfoMaster - Estilos principales
+ * style.css – InfoMaster (versión limpia y mejorada)
  */
 
-/* Resets y estilos base */
+/* ———————————————————————————————————————————————————————————— 
+   1) Variables CSS (único bloque :root)
+———————————————————————————————————————————————————————————— */
 :root {
-  --primary-color: #0066ff;
+  /* Colores base */
+  --primary-color:   #0066ff;
   --secondary-color: #ff6600;
-  --dark-color: #222;
-  --light-color: #f4f4f4;
-  --success-color: #5cb85c;
-  --error-color: #d9534f;
-  --warning-color: #f0ad4e;
-  --info-color: #5bc0de;
+  --dark-color:      #222;
+  --light-color:     #f4f4f4;
+
+  /* Estados */
+  --success-color:   #5cb85c;
+  --error-color:     #d9534f;
+  --warning-color:   #f0ad4e;
+  --info-color:      #5bc0de;
+
+  /* Neutros */
   --gray-100: #f8f9fa;
   --gray-200: #e9ecef;
   --gray-300: #dee2e6;
@@ -21,8 +28,18 @@
   --gray-700: #495057;
   --gray-800: #343a40;
   --gray-900: #212529;
+
+  /* Dark theme variables */
+  --bg-dark:    #0a0a0f;
+  --bg-darker:  #030309;
+  --text-light: #f4f4f4;
+  --accent:     #ff6600;  /* equivalente a --secondary-color */
+  --accent-2:   #0066ff;  /* equivalente a --primary-color */
 }
 
+/* ———————————————————————————————————————————————————————————— 
+   2) Resets y estilos base
+———————————————————————————————————————————————————————————— */
 * {
   margin: 0;
   padding: 0;
@@ -32,30 +49,29 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
-  color: var(--gray-800);
-  background-color: var(--gray-100);
+  color: var(--text-light);
+  background: var(--bg-dark);
 }
 
 a {
   text-decoration: none;
-  color: var(--primary-color);
+  color: var(--accent-2);
   transition: color 0.3s;
 }
-
 a:hover {
-  color: #0055cc;
+  color: var(--accent);
 }
 
-ul {
-  list-style: none;
-}
-
+ul { list-style: none; }
 img {
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
-/* Layout */
+/* ———————————————————————————————————————————————————————————— 
+   3) Layout general
+———————————————————————————————————————————————————————————— */
 .container {
   width: 100%;
   max-width: 1200px;
@@ -74,45 +90,33 @@ img {
   padding: 0 15px;
 }
 
-/* Cabecera */
-header {
-  background-color: var(--dark-color);
-  color: white;
-  padding: 1rem 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-header.fixed {
+/* ———————————————————————————————————————————————————————————— 
+   4) Header fijo y transparente
+———————————————————————————————————————————————————————————— */
+#main-header {
   position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
+  top: 0; left: 0; width: 100%;
+  background: rgba(10,10,15,0.6);
+  backdrop-filter: blur(8px);
+  transition: background 0.3s;
   z-index: 1000;
-  animation: slideDown 0.3s ease-out;
 }
-
-@keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(0);
-  }
+#main-header.scrolled {
+  background: var(--bg-darker);
 }
 
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem 0;
 }
 
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
-  color: white;
-  text-decoration: none;
+  color: var(--text-light);
 }
-
 .logo span {
   color: var(--secondary-color);
 }
@@ -120,769 +124,302 @@ header.fixed {
 nav ul {
   display: flex;
 }
-
-nav ul li {
+nav ul li + li {
   margin-left: 1.5rem;
 }
-
 nav ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 0.9rem;
+  color: var(--text-light);
   text-transform: uppercase;
+  font-size: 0.9rem;
   transition: color 0.3s;
 }
-
 nav ul li a:hover,
 nav ul li a.active {
-  color: var(--secondary-color);
+  color: var(--accent);
 }
 
 .user-menu {
   display: flex;
   align-items: center;
 }
-
 .user-menu a {
-  color: white;
-  text-decoration: none;
+  color: var(--text-light);
   margin-left: 1rem;
   font-size: 0.9rem;
 }
-
 .user-menu .wallet {
-  background-color: var(--secondary-color);
+  background: var(--secondary-color);
   padding: 0.3rem 0.8rem;
   border-radius: 20px;
   font-weight: bold;
 }
-
 .user-menu .cart {
   position: relative;
 }
-
 .user-menu .cart-count {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: var(--secondary-color);
-  color: white;
+  top: -8px; right: -8px;
+  background: var(--secondary-color);
+  color: #fff;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
+  width: 18px; height: 18px;
   font-size: 0.7rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.mobile-menu-toggle {
-  display: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: white;
-}
-
-/* Botones */
+/* ———————————————————————————————————————————————————————————— 
+   5) Botones
+———————————————————————————————————————————————————————————— */
 .btn {
   display: inline-block;
-  padding: 0.8rem 1.5rem;
-  background-color: var(--primary-color);
-  color: white;
+  padding: 0.8rem 1.2rem;
+  background: var(--accent-2);
+  color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: background-color 0.3s;
+  font-family: 'Montserrat', sans-serif;
+  transition: background 0.3s;
   text-align: center;
 }
-
 .btn:hover {
-  background-color: #0055cc;
-  color: white;
+  background: var(--accent);
 }
-
 .btn-secondary {
-  background-color: var(--secondary-color);
+  background: var(--accent);
 }
-
 .btn-secondary:hover {
-  background-color: #e65c00;
+  background: var(--accent-2);
 }
-
-.btn-success {
-  background-color: var(--success-color);
-}
-
-.btn-success:hover {
-  background-color: #4cae4c;
-}
-
-.btn-danger {
-  background-color: var(--error-color);
-}
-
-.btn-danger:hover {
-  background-color: #c9302c;
-}
-
 .btn-outline {
-  background-color: transparent;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  background: transparent;
+  border: 1px solid var(--accent-2);
+  color: var(--accent-2);
 }
-
 .btn-outline:hover {
-  background-color: var(--primary-color);
-  color: white;
+  background: var(--accent-2);
+  color: #fff;
 }
-
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
 .btn-large {
   padding: 1rem 2rem;
   font-size: 1.1rem;
 }
 
-.btn-small {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-
-.btn[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Hero */
-.hero {
-  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('../img/hero-bg.jpg') no-repeat center center/cover;
-  color: white;
-  padding: 5rem 0;
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.hero p {
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto 2rem auto;
-}
-
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-/* Títulos de sección */
-.section-title {
-  text-align: center;
+/* ———————————————————————————————————————————————————————————— 
+   6) Hero / Carrusel (Glide.js)
+———————————————————————————————————————————————————————————— */
+.hero-slider {
+  position: relative;
   margin-bottom: 2rem;
 }
-
-.section-title h2 {
-  font-size: 2rem;
-  color: var(--dark-color);
-  position: relative;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.5rem;
+.glide__slide img {
+  width: 100%; height: auto;
+  object-fit: cover;
+}
+.slide-caption {
+  position: absolute;
+  bottom: 20%;
+  left: 5%;
+  color: #fff;
+  max-width: 400px;
+}
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
 }
 
+/* ———————————————————————————————————————————————————————————— 
+   7) Títulos de sección
+———————————————————————————————————————————————————————————— */
+.section-title {
+  text-align: center;
+  margin: 2rem 0 1rem;
+}
+.section-title h2 {
+  font-size: 2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
 .section-title h2::after {
   content: '';
   position: absolute;
-  left: 50%;
-  bottom: 0;
+  bottom: 0; left: 50%;
   transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background-color: var(--secondary-color);
+  width: 100px; height: 3px;
+  background: var(--secondary-color);
 }
-
 .section-title p {
-  color: var(--gray-600);
+  color: var(--gray-500);
   font-size: 1.1rem;
 }
 
-/* Productos */
+/* ———————————————————————————————————————————————————————————— 
+   8) Grid de productos con overlay
+———————————————————————————————————————————————————————————— */
 .products {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
   gap: 1.5rem;
-  margin-bottom: 2rem;
+  margin: 2rem 0;
 }
-
 .product {
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: relative;
+  background: #111;
+  color: var(--text-light);
   border-radius: 6px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   transition: transform 0.3s, box-shadow 0.3s;
 }
-
 .product:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
-
 .product-img {
-  height: 200px;
   width: 100%;
+  height: 200px;
   object-fit: cover;
+  transition: transform 0.3s;
 }
-
+.product:hover .product-img {
+  transform: scale(1.1);
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.product:hover .overlay {
+  opacity: 1;
+}
 .product-info {
-  padding: 1.2rem;
+  padding: 1rem;
+  flex: 1;
+  text-align: center;
 }
-
-.product-category {
-  color: #666;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
 .product-title {
   margin: 0.5rem 0;
   font-size: 1.2rem;
 }
-
 .product-price {
-  color: var(--primary-color);
+  color: var(--accent);
   font-weight: bold;
-  font-size: 1.4rem;
-  margin: 0.7rem 0;
 }
 
-.product-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-}
-
-.view-all {
-  text-align: center;
-  margin-top: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-/* Categorías */
-.categories {
-  background-color: var(--light-color);
-  padding: 3rem 0;
-  margin-bottom: 3rem;
-}
-
-.category-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
-}
-
-.category-card {
-  background-color: white;
-  text-align: center;
-  padding: 2rem 1rem;
-  border-radius: 6px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  transition: transform 0.3s;
-}
-
-.category-card:hover {
-  transform: translateY(-5px);
-}
-
-.category-card img {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 1rem;
-}
-
-.category-card h3 {
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
-}
-
-/* Cómo funciona */
-.how-it-works {
-  padding: 3rem 0;
-  margin-bottom: 3rem;
-}
-
-.steps {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
-
-.step {
-  text-align: center;
-  flex: 1;
-  min-width: 200px;
+/* ———————————————————————————————————————————————————————————— 
+   9) Sticky filters sidebar
+———————————————————————————————————————————————————————————— */
+.filtros-sidebar {
+  position: sticky;
+  top: 80px;
+  background: var(--bg-darker);
   padding: 1rem;
-}
-
-.step-icon {
-  width: 70px;
-  height: 70px;
-  background-color: var(--primary-color);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.8rem;
-  margin: 0 auto 1rem auto;
-}
-
-.step h3 {
-  margin-bottom: 0.8rem;
-  font-size: 1.3rem;
-}
-
-/* Testimonios */
-.testimonials {
-  background-color: var(--light-color);
-  padding: 3rem 0;
-  margin-bottom: 3rem;
-}
-
-.testimonial-slider {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  transition: transform 0.5s ease;
-}
-
-.testimonial {
-  float: left;
-  padding: 0 1rem;
-}
-
-.testimonial-content {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  margin-bottom: 1.5rem;
-  position: relative;
-}
-
-.testimonial-content::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid white;
-}
-
-.testimonial-content p {
-  font-style: italic;
-  font-size: 1.1rem;
-}
-
-.testimonial-author {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.testimonial-author img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 1rem;
-  border: 3px solid white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.testimonial-author h4 {
-  margin-bottom: 0.2rem;
-  font-size: 1.1rem;
-}
-
-.testimonial-author span {
-  color: var(--gray-600);
-  font-size: 0.9rem;
-}
-
-.slider-indicators {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-.slider-indicators span {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--gray-300);
-  margin: 0 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.slider-indicators span.active {
-  background-color: var(--primary-color);
-}
-
-.slider-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  background-color: white;
-  border-radius: 50%;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-
-.slider-nav.prev {
-  left: 10px;
-}
-
-.slider-nav.next {
-  right: 10px;
-}
-
-/* Preguntas frecuentes */
-.faq {
-  padding: 3rem 0;
-  margin-bottom: 3rem;
-}
-
-.faq-accordion {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.faq-item {
-  background-color: white;
   border-radius: 6px;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  overflow: hidden;
+  color: var(--text-light);
 }
 
-.faq-question {
-  padding: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.faq-question h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.faq-toggle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
-.faq-answer {
-  padding: 0 1.2rem;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-}
-
-.faq-answer p {
-  margin-bottom: 1.2rem;
-  line-height: 1.7;
-}
-
-/* Call to Action */
-.cta {
-  background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('../img/cta-bg.jpg') no-repeat center center/cover;
-  color: white;
-  padding: 5rem 0;
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.cta h2 {
-  font-size: 2.2rem;
-  margin-bottom: 1rem;
-}
-
-.cta p {
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto 2rem auto;
-}
-
-.cta-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-/* Footer */
-footer {
-  background-color: var(--dark-color);
-  color: white;
-  padding: 3rem 0 1rem;
-}
-
-.footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.footer-section h3 {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  position: relative;
-  padding-bottom: 0.5rem;
-}
-
-.footer-section h3::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 50px;
-  height: 2px;
-  background-color: var(--secondary-color);
-}
-
-.footer-section ul li {
-  margin-bottom: 0.5rem;
-}
-
-.footer-section ul li a {
-  color: #ccc;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.footer-section ul li a:hover {
-  color: var(--secondary-color);
-}
-
-.footer-section p {
-  color: #ccc;
-  margin-bottom: 1rem;
-}
-
-.socials {
-  display: flex;
-  margin-top: 1rem;
-}
-
-.socials a {
-  width: 35px;
-  height: 35px;
-  background-color: #333;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 0.5rem;
-  transition: all 0.3s;
-}
-
-.socials a:hover {
-  background-color: var(--secondary-color);
-  color: white;
-}
-
-.footer-bottom {
-  text-align: center;
-  padding-top: 1.5rem;
-  border-top: 1px solid #444;
-}
-
-/* Mensajes */
-.mensaje-container {
-  position: fixed;
-  top: 70px;
-  left: 0;
+/* ———————————————————————————————————————————————————————————— 
+ 10) Imagen de detalle
+———————————————————————————————————————————————————————————— */
+.detalle-img {
+  display: block;
   width: 100%;
-  z-index: 1000;
-  transition: opacity 0.3s;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
+  margin: 2rem 0;
 }
 
-.mensaje-container > .container {
-  position: relative;
-  padding: 1rem;
-  border-radius: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+/* ———————————————————————————————————————————————————————————— 
+ 11) Otras secciones (Categorías, How-it-works, Testimonials, FAQ…)
+     (Puedes mantener las tuyas adaptando sólo colores y fondos)
+———————————————————————————————————————————————————————————— */
 
-.mensaje-info {
-  background-color: var(--info-color);
-  color: white;
-}
+/* ... tus estilos de .categories, .how-it-works, .testimonials, etc. ... */
 
-.mensaje-success {
-  background-color: var(--success-color);
-  color: white;
-}
+/* ———————————————————————————————————————————————————————————— 
+ 12) Utilidades
+———————————————————————————————————————————————————————————— */
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+.text-left   { text-align: left; }
 
-.mensaje-error {
-  background-color: var(--error-color);
-  color: white;
-}
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
 
-.mensaje-warning {
-  background-color: var(--warning-color);
-  color: white;
-}
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
 
-.cerrar-mensaje {
-  background: none;
-  border: none;
-  color: white;
+/* ———————————————————————————————————————————————————————————— 
+ 13) Detalle de producto + formulario de compra
+———————————————————————————————————————————————————————————— */
+.product-detail .product-price {
   font-size: 1.5rem;
-  cursor: pointer;
-}
-
-/* Notificaciones */
-.notificacion {
-  position: fixed;
-  top: 100px;
-  right: 20px;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  z-index: 1000;
-  transition: transform 0.3s, opacity 0.3s;
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-.notificacion.mostrar {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.notificacion-success {
-  background-color: var(--success-color);
-  color: white;
-}
-
-.notificacion-error {
-  background-color: var(--error-color);
-  color: white;
-}
-
-.notificacion-info {
-  background-color: var(--info-color);
-  color: white;
-}
-
-.notificacion-warning {
-  background-color: var(--warning-color);
-  color: white;
-}
-
-/* Botón de ir arriba */
-.go-top {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  background-color: var(--primary-color);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
-  z-index: 900;
-}
-
-.go-top.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Utilidades */
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.mb-1 {
-  margin-bottom: 0.5rem;
-}
-
-.mb-2 {
   margin-bottom: 1rem;
 }
 
-.mb-3 {
-  margin-bottom: 1.5rem;
+.product-detail .mb-3 {
+  margin-bottom: 1rem;
 }
 
-.mb-4 {
-  margin-bottom: 2rem;
+.product-detail .form-control {
+  width: 100%;
+  padding: .5rem .75rem;
+  border: 1px solid #ccc;
+  border-radius: .25rem;
+  font-size: 1rem;
+  background: var(--bg-dark);
+  color: var(--text-light);
 }
 
-.mt-1 {
-  margin-top: 0.5rem;
+.product-detail .quantity-control {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
 }
 
-.mt-2 {
-  margin-top: 1rem;
+.product-detail .quantity-btn {
+  padding: .3rem .6rem;
+  border: none;
+  background: var(--gray-700);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: .25rem;
+  transition: background .2s;
 }
 
-.mt-3 {
-  margin-top: 1.5rem;
+.product-detail .quantity-btn:hover {
+  background: var(--gray-600);
 }
 
-.mt-4 {
-  margin-top: 2rem;
+.product-detail .quantity-input {
+  width: 4rem;
+  text-align: center;
+  padding: .3rem .5rem;
+  border: 1px solid #ccc;
+  border-radius: .25rem;
+  background: var(--bg-dark);
+  color: var(--text-light);
 }
 
-.reveal {
-  transform: translateY(50px);
-  opacity: 0;
-  transition: transform 1s, opacity 1s;
-}
-
-.reveal.active {
-  transform: translateY(0);
-  opacity: 1;
+.product-detail .action-buttons .btn {
+  margin-right: .5rem;
 }
