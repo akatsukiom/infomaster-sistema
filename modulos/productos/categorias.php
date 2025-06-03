@@ -1,53 +1,56 @@
+
 <?php
-define('ACCESO_PERMITIDO', true);
-require_once 'includes/config.php';
-require_once 'includes/funciones.php';
-
-// Obtener todas las categorías
-$sql = "SELECT c.*, COUNT(p.id) as total_productos 
-        FROM categorias c 
-        LEFT JOIN productos p ON c.id = p.categoria_id 
-        GROUP BY c.id 
-        ORDER BY c.nombre";
-$resultado = $conexion->query($sql);
-$categorias = [];
-
-while($fila = $resultado->fetch_assoc()) {
-    $categorias[] = $fila;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+if (!defined('ACCESO_PERMITIDO')) {
+    define('ACCESO_PERMITIDO', true);
 }
-
-// Incluir header
+require_once __DIR__ . '/../../includes/config.php';
+require_once __DIR__ . '/../../includes/funciones.php';
+$sql = "SELECT c.*, COUNT(p.id) AS total_productos
+        FROM categorias c
+        LEFT JOIN productos p ON c.id = p.categoria_id
+        GROUP BY c.id
+        ORDER BY c.nombre";
+$res = $conexion->query($sql);
 $titulo = "Categorías";
-include 'includes/header.php';
+include __DIR__ . '/../../includes/header.php';
 ?>
-
 <div class="container">
-    <div class="categorias-container">
-        <h1>Explora nuestras categorías</h1>
-        
-        <?php if(empty($categorias)): ?>
-            <div class="no-categorias">
-                <p>No hay categorías disponibles en este momento.</p>
-                <a href="productos.php" class="btn">Ver todos los productos</a>
-            </div>
-        <?php else: ?>
-            <div class="categorias-grid">
-                <?php foreach($categorias as $categoria): ?>
-                    <div class="categoria-card">
-                        <div class="categoria-imagen">
-                            <img src="<?php echo $categoria['imagen'] ?: 'img/categoria-default.jpg'; ?>" alt="<?php echo $categoria['nombre']; ?>">
-                        </div>
-                        <div class="categoria-info">
-                            <h2><?php echo $categoria['nombre']; ?></h2>
-                            <p><?php echo $categoria['descripcion']; ?></p>
-                            <span class="categoria-cantidad"><?php echo $categoria['total_productos']; ?> productos</span>
-                            <a href="productos.php?categoria=<?php echo $categoria['id']; ?>" class="btn">Ver productos</a>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-    </div>
+  <h1>Explora nuestras categorías</h1>
+  <?php if (!$res || $res->num_rows === 0): ?>
+    <p>No hay categorías disponibles.</p>
+    <a href="<?= URL_SITIO ?>productos" class="btn">Ver todos los productos</a>
+  <?php else: ?>
+    <div class="categories-container">
+      <?php while ($c = $res->fetch_assoc()): ?>
+        <?php
+          $rutaImg = !empty($c['imagen'])
+              ? URL_SITIO . $c['imagen']
+              : URL_SITIO . 'img/categoria-default.jpg';
+        ?>
+        <div class="category-card">
+          <div class="categoria-img-container">
+            <img src="<?= $rutaImg ?>"
+                 alt="<?= htmlspecialchars($c['nombre']) ?>"
+                 class="categoria-img">
+          </div>
+         <div class="category-info">
+  <h2 class="categoria-title"><?= htmlspecialchars($c['nombre']) ?></h2>
+  <p class="categoria-description"><?= (int)$c['total_productos'] ?> productos</p>
+  <!-- Único <a> bien formado -->
+  <a 
+    href="<?= URL_SITIO ?>productos.php?categoria=<?= (int)$c['id'] ?>" 
+    class="categoria-btn"
+  >
+    Ver productos
+  </a>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+        </div>
+      <?php endwhile; ?>
+    </div>
+  <?php endif; ?>
+</div>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>

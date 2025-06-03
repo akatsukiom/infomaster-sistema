@@ -1,0 +1,97 @@
+/* reset.css */
+/* Modern CSS Reset v2.0.0 | © Andy Bell | MIT License */
+
+/* 1. Remove default margins and paddings, set box-sizing */
+:where(html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* 2. Make HTML5 elements display correctly */
+:where(article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section) {
+  display: block;
+}
+
+/* 3. Base line-height */
+:where(body) {
+  line-height: 1;
+}
+
+/* 4. Remove list styles */
+:where(ol, ul) {
+  list-style: none;
+}
+
+/* 5. Remove default blockquote quotes */
+:where(blockquote, q) {
+  quotes: none;
+}
+:where(blockquote::before, blockquote::after,
+q::before, q::after) {
+  content: '';
+  content: none;
+}
+
+/* 6. Tables */
+:where(table) {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* 7. Box sizing inherit */
+:where(html) {
+  box-sizing: border-box;
+}
+:where(*, *::before, *::after) {
+  box-sizing: inherit;
+}
+
+/* 8. Remove default link styles */
+:where(a) {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 9. Media elements */
+:where(img, picture, video, canvas, svg) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 10. Form elements inherit font */
+:where(button, input, select, textarea) {
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  line-height: inherit;
+}
+
+/* 11. Hide overflow if necessary */
+:where(html, body) {
+  overflow-x: hidden;
+}
+
+/* 12. Smooth scrolling */
+:where(html) {
+  scroll-behavior: smooth;
+}

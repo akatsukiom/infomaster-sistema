@@ -1,0 +1,579 @@
+/* ========================================
+   HEADER.CSS - DISTRIBUCIÓN MEJORADA
+   Mejoras en layout y espaciado de menús
+   ======================================== */
+
+/* Variables CSS */
+:root {
+    --primary-accent: #4361ee;
+    --secondary-accent: #8338ec;
+    --accent-color: #8338ec;
+    --text-color: #333;
+    --secondary-color: #666;
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --shadow-soft: 0 2px 20px rgba(0,0,0,0.08);
+}
+
+/* ========== HEADER PRINCIPAL ========== */
+header { 
+    background: #fff !important; 
+    box-shadow: var(--shadow-soft) !important; 
+    position: sticky !important; 
+    top: 0 !important; 
+    z-index: 1000 !important; 
+    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    width: 100% !important;
+}
+
+.header-container { 
+    display: flex !important; 
+    justify-content: space-between !important; 
+    align-items: center !important; 
+    padding: 15px 20px !important; 
+    flex-wrap: nowrap !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    gap: 20px !important;
+}
+
+/* ========== LOGO OPTIMIZADO ========== */
+.logo { 
+    display: flex !important; 
+    align-items: center !important; 
+    text-decoration: none !important; 
+    color: var(--text-color) !important; 
+    font-size: 1.6rem !important; 
+    font-weight: 700 !important; 
+    transition: var(--transition) !important; 
+    z-index: 1001 !important;
+    flex-shrink: 0 !important;
+    min-width: 200px !important;
+}
+
+.logo:hover { 
+    color: var(--primary-accent) !important; 
+    transform: scale(1.02) !important;
+}
+
+.logo-img { 
+    width: 45px !important; 
+    height: 45px !important; 
+    background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent)) !important; 
+    border-radius: 50% !important; 
+    display: flex !important; 
+    align-items: center !important; 
+    justify-content: center !important; 
+    margin-right: 12px !important; 
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3) !important;
+    transition: var(--transition) !important;
+}
+
+.logo:hover .logo-img {
+    transform: rotate(5deg) scale(1.05) !important;
+    box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4) !important;
+}
+
+.logo-img span { 
+    color: #fff !important; 
+    font-weight: bold !important; 
+    font-size: 1.2rem !important;
+}
+
+/* ========== NAVEGACIÓN PRINCIPAL MEJORADA ========== */
+.main-nav { 
+    flex-grow: 1 !important; 
+    margin: 0 40px !important;
+    max-width: 600px !important;
+}
+
+.menu { 
+    display: flex !important; 
+    list-style: none !important; 
+    margin: 0 !important; 
+    padding: 0 !important; 
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    gap: 20px !important;
+}
+
+.menu-item { 
+    position: relative !important; 
+    margin: 0 !important;
+    flex: 1 !important;
+    text-align: center !important;
+}
+
+.menu-link { 
+    display: block !important; 
+    padding: 14px 24px !important; 
+    text-decoration: none !important; 
+    color: var(--text-color) !important; 
+    font-weight: 600 !important; 
+    transition: var(--transition-smooth) !important; 
+    border-radius: var(--border-radius) !important; 
+    position: relative !important;
+    font-size: 1rem !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    min-height: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.menu-link:hover, 
+.menu-link.active { 
+    color: var(--primary-accent) !important; 
+    background: rgba(67, 97, 238, 0.1) !important; 
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2) !important;
+}
+
+.menu-link::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent)) !important;
+    transition: all 0.3s ease !important;
+    transform: translateX(-50%) !important;
+    border-radius: 2px !important;
+}
+
+.menu-link:hover::before,
+.menu-link.active::before {
+    width: 90% !important;
+}
+
+/* ========== DROPDOWN MENUS MEJORADOS ========== */
+.dropdown-menu { 
+    position: absolute !important; 
+    top: calc(100% + 10px) !important; 
+    left: 50% !important;
+    transform: translateX(-50%) translateY(10px) !important;
+    min-width: 250px !important; 
+    background: #fff !important; 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15) !important; 
+    border-radius: 12px !important; 
+    padding: 15px 0 !important; 
+    opacity: 0 !important; 
+    visibility: hidden !important; 
+    transition: var(--transition-smooth) !important; 
+    z-index: 1001 !important; 
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.dropdown-menu::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -8px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-left: 8px solid transparent !important;
+    border-right: 8px solid transparent !important;
+    border-bottom: 8px solid #fff !important;
+    filter: drop-shadow(0 -2px 4px rgba(0,0,0,0.1)) !important;
+}
+
+.menu-item.dropdown.active .dropdown-menu,
+.menu-item.dropdown:hover .dropdown-menu { 
+    opacity: 1 !important; 
+    visibility: visible !important; 
+    transform: translateX(-50%) translateY(0) !important; 
+}
+
+.dropdown-menu .menu-link { 
+    padding: 12px 25px !important; 
+    border-radius: 8px !important; 
+    font-size: 0.95rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin: 2px 10px !important;
+    min-height: auto !important;
+    justify-content: flex-start !important;
+}
+
+.dropdown-menu .menu-link:hover { 
+    background: rgba(67, 97, 238, 0.08) !important; 
+    color: var(--primary-accent) !important;
+    transform: translateX(5px) !important;
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.15) !important;
+}
+
+.dropdown-menu .menu-link::before {
+    display: none !important;
+}
+
+.dropdown-menu .menu-link i {
+    width: 18px !important;
+    text-align: center !important;
+    opacity: 0.7 !important;
+    font-size: 1.1em !important;
+}
+
+.menu-link.dropdown-toggle::after { 
+    content: '▼' !important; 
+    font-size: 0.7em !important; 
+    margin-left: 10px !important; 
+    vertical-align: middle !important; 
+    transition: transform 0.3s ease !important;
+    opacity: 0.7 !important;
+}
+
+.menu-item.dropdown.active .dropdown-toggle::after,
+.menu-item.dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg) !important;
+    opacity: 1 !important;
+}
+
+/* ========== MENÚ DE USUARIO OPTIMIZADO ========== */
+.user-menu { 
+    display: flex !important; 
+    align-items: center !important; 
+    gap: 15px !important;
+    flex-shrink: 0 !important;
+    min-width: 350px !important;
+    justify-content: flex-end !important;
+}
+
+.wallet, .cart { 
+    display: flex !important; 
+    align-items: center !important; 
+    text-decoration: none !important; 
+    color: var(--text-color) !important; 
+    font-weight: 600 !important; 
+    transition: var(--transition-smooth) !important; 
+    padding: 10px 15px !important;
+    border-radius: 10px !important;
+    background: rgba(67, 97, 238, 0.05) !important;
+    border: 1px solid rgba(67, 97, 238, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    font-size: 0.95rem !important;
+}
+
+.wallet::before,
+.cart::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent) !important;
+    transition: left 0.6s !important;
+}
+
+.wallet:hover::before,
+.cart:hover::before {
+    left: 100% !important;
+}
+
+.wallet:hover, .cart:hover { 
+    color: var(--primary-accent) !important; 
+    background: rgba(67, 97, 238, 0.1) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(67, 97, 238, 0.2) !important;
+    border-color: var(--primary-accent) !important;
+}
+
+.wallet i, .cart i {
+    margin-right: 8px !important;
+    font-size: 1.2em !important;
+    transition: transform 0.3s ease !important;
+}
+
+.wallet:hover i,
+.cart:hover i {
+    transform: scale(1.1) rotate(5deg) !important;
+}
+
+.cart-count { 
+    background: var(--secondary-accent) !important; 
+    color: #fff !important; 
+    font-size: 0.75rem !important; 
+    width: 20px !important; 
+    height: 20px !important; 
+    border-radius: 50% !important; 
+    display: inline-flex !important; 
+    align-items: center !important; 
+    justify-content: center !important; 
+    margin-left: 8px !important; 
+    font-weight: 700 !important;
+    animation: pulse 2s infinite !important;
+    box-shadow: 0 2px 8px rgba(131, 56, 236, 0.4) !important;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+.user-actions { 
+    display: flex !important; 
+    gap: 12px !important; 
+}
+
+/* ========== BOTONES MEJORADOS ========== */
+.btn {
+    padding: 10px 18px !important;
+    border: none !important;
+    border-radius: 10px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: var(--transition-smooth) !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 0.95rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+}
+
+.btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+    transition: left 0.6s !important;
+}
+
+.btn:hover::before {
+    left: 100% !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-accent), #5b73f0) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3) !important;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #3651d4, var(--primary-accent)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4) !important;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--secondary-accent), #9d4edd) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(131, 56, 236, 0.3) !important;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #7129d1, var(--secondary-accent)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(131, 56, 236, 0.4) !important;
+}
+
+.btn-outline {
+    background: transparent !important;
+    color: var(--primary-accent) !important;
+    border: 2px solid var(--primary-accent) !important;
+}
+
+.btn-outline:hover {
+    background: var(--primary-accent) !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3) !important;
+}
+
+.btn i {
+    transition: transform 0.3s ease !important;
+}
+
+.btn:hover i {
+    transform: scale(1.1) !important;
+}
+
+/* ========== RESPONSIVE MEJORADO ========== */
+@media (max-width: 1200px) {
+    .header-container {
+        max-width: 100% !important;
+        padding: 12px 15px !important;
+    }
+    
+    .main-nav {
+        margin: 0 20px !important;
+    }
+    
+    .menu {
+        gap: 15px !important;
+    }
+    
+    .menu-link {
+        padding: 12px 18px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .user-menu {
+        min-width: 300px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding: 15px !important;
+    }
+    
+    .logo {
+        font-size: 1.4rem !important;
+        min-width: auto !important;
+    }
+    
+    .main-nav {
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
+    
+    .menu {
+        flex-direction: column !important;
+        gap: 5px !important;
+        padding: 15px 0 !important;
+        background: rgba(67, 97, 238, 0.02) !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(67, 97, 238, 0.1) !important;
+    }
+    
+    .menu-item {
+        width: 100% !important;
+        text-align: left !important;
+    }
+    
+    .menu-link {
+        padding: 15px 25px !important;
+        border-radius: 8px !important;
+        margin: 0 10px !important;
+        justify-content: flex-start !important;
+    }
+    
+    .dropdown-menu {
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.1) !important;
+        background: rgba(67, 97, 238, 0.03) !important;
+        margin: 5px 10px !important;
+        border-radius: 8px !important;
+        display: none !important;
+    }
+    
+    .dropdown-menu::before {
+        display: none !important;
+    }
+    
+    .menu-item.dropdown.active .dropdown-menu {
+        display: block !important;
+    }
+    
+    .user-menu {
+        width: 100% !important;
+        min-width: auto !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+    
+    .wallet, .cart {
+        flex: 1 !important;
+        min-width: 140px !important;
+        justify-content: center !important;
+        padding: 12px 10px !important;
+    }
+    
+    .user-actions {
+        width: 100% !important;
+        justify-content: center !important;
+        margin-top: 10px !important;
+    }
+    
+    .btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        min-width: 120px !important;
+        padding: 12px 10px !important;
+    }
+}
+
+/* ========== ANIMACIONES MEJORADAS ========== */
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.header-container {
+    animation: slideInDown 0.6s ease-out !important;
+}
+
+.dropdown-menu {
+    animation: fadeInUp 0.3s ease-out !important;
+}
+
+.menu-item {
+    animation: fadeInUp 0.4s ease-out !important;
+}
+
+.menu-item:nth-child(1) { animation-delay: 0.1s !important; }
+.menu-item:nth-child(2) { animation-delay: 0.2s !important; }
+.menu-item:nth-child(3) { animation-delay: 0.3s !important; }
+
+/* ========== MEJORAS DE PERFORMANCE ========== */
+.menu-link,
+.btn,
+.wallet,
+.cart {
+    will-change: transform, box-shadow !important;
+}
+
+.dropdown-menu {
+    will-change: opacity, transform !important;
+}
+
+/* ========== MEJORAS VISUALES ADICIONALES ========== */
+.menu-link:focus-visible {
+    outline: 2px solid var(--primary-accent) !important;
+    outline-offset: 2px !important;
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--primary-accent) !important;
+    outline-offset: 2px !important;
+}
+
+/* ========== FIN HEADER.CSS MEJORADO ========== */

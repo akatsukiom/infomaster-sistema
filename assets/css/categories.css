@@ -1,0 +1,153 @@
+/* categories.css */
+/* Estilos para la sección de Categorías */
+
+/* ===== CATEGORIES SECTION ===== */
+.categories {
+  padding: var(--space-2xl) 0;
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+/* ===== CATEGORY CARD ===== */
+.category-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur-glass);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  text-align: center;
+  border: 1px solid var(--glass-border);
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: var(--shadow-card);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== CATEGORY ICON ===== */
+.category-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-lg);
+  transition: var(--transition);
+  display: block;
+}
+
+.category-card:hover .category-icon {
+  transform: scale(1.2) rotate(10deg);
+}
+
+/* ===== CATEGORY CONTENT ===== */
+.category-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: var(--space-md);
+  color: var(--text-white);
+}
+
+.category-description {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ===== CATEGORY EFFECTS ===== */
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: var(--transition);
+}
+
+.category-card:hover::before {
+  left: 100%;
+}
+
+/* ===== SPECIFIC CATEGORY STYLES ===== */
+.category-card[data-category="gaming"] {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, var(--glass-bg) 100%);
+}
+
+.category-card[data-category="streaming"] {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, var(--glass-bg) 100%);
+}
+
+.category-card[data-category="software"] {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, var(--glass-bg) 100%);
+}
+
+.category-card[data-category="cursos"] {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, var(--glass-bg) 100%);
+}
+
+.category-card[data-category="vpn"] {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, var(--glass-bg) 100%);
+}
+
+.category-card[data-category="cloud"] {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, var(--glass-bg) 100%);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+  .categories-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .categories {
+    padding: var(--space-xl) 0;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .category-card {
+    padding: var(--space-xl);
+  }
+
+  .category-icon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .category-card {
+    padding: var(--space-lg);
+  }
+
+  .category-icon {
+    font-size: 2rem;
+  }
+
+  .category-title {
+    font-size: 1.1rem;
+  }
+
+  .category-description {
+    font-size: 0.85rem;
+  }
+}

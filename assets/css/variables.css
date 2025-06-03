@@ -1,0 +1,49 @@
+/* variables.css */
+/* Todas tus variables globales de proyecto (colores, espaciados, sombras, transiciones…) */
+
+:root {
+    /* Colores principales */
+    --primary-purple: #6366f1;
+    --secondary-purple: #8b5cf6;
+    --accent-teal: #06b6d4;
+    --accent-green: #10b981;
+    --dark-bg: #1e1b4b;
+    --darker-bg: #1e293b;
+
+    /* Fondos “glass” */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+
+    /* Gradientes */
+    --gradient-main: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+    --gradient-secondary: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e293b 100%);
+    --gradient-accent: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+
+    /* Textos */
+    --text-white: #ffffff;
+    --text-gray: rgba(255, 255, 255, 0.8);
+    --text-muted: rgba(255, 255, 255, 0.6);
+
+    /* Sombras y desenfoques */
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
+    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --blur-glass: blur(20px);
+
+    /* Transiciones */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Espaciados */
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+
+    /* Bordes redondeados */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+}

@@ -38,7 +38,8 @@ if(isset($_POST['id']) && isset($_POST['cantidad'])) {
     // Verificar que el producto existe
     if($info_producto) {
         // Agregar al carrito
-        Carrito::agregar($producto_id, $cantidad, $info_producto['precio']);
+     Carrito::agregar($producto_id, $info_producto['precio'], $cantidad);
+
         
         $response = [
             'success' => true,

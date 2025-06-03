@@ -1,0 +1,82 @@
+/* ==== Panel Admin ==== */
+.admin-panel {
+  max-width: 96%;
+  margin: 1rem auto;
+  font-family: sans-serif;
+}
+.admin-tabs {
+  display: flex;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 1rem;
+}
+.admin-tabs .tab-button {
+  padding: 0.6rem 1.2rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: border-color .2s;
+}
+.admin-tabs .tab-button.active {
+  border-color: #007bff;
+  font-weight: bold;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+.btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: .5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-outline {
+  background: none;
+  border: 1px solid #007bff;
+  color: #007bff;
+  padding: .5rem .8rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn:hover, .btn-outline:hover {
+  opacity: .85;
+}
+
+/* Tabla */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+.admin-table th, .admin-table td {
+  border: 1px solid #ddd;
+  padding: .6rem .8rem;
+  text-align: left;
+}
+.admin-table th {
+  background: #f9f9f9;
+}
+.admin-table .actions a {
+  margin-right: .5rem;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+/* Errores / alertas */
+.errores, .success {
+  background: #ffe5e5;
+  border: 1px solid #ffcccc;
+  padding: .8rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  color: #b30000;
+}

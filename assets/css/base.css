@@ -1,0 +1,271 @@
+/* base.css */
+/* Tipografías, contenedor base y utilidades genéricas */
+
+/* === Box sizing y comportamientos globales === */
+html {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  font-size: 16px; /* 1rem = 16px, ajustable si se desea */
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* === Reset ligero de márgenes === */
+body, h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd {
+  margin: 0;
+}
+
+/* === Tipografía base === */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  color: var(--text-white);
+  background: var(--gradient-secondary);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Partículas de fondo animadas */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 40% 70%, rgba(6, 182, 212, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: -1;
+  animation: particleFloat 15s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+  0%, 100% { opacity: 1; transform: translateY(0) scale(1); }
+  50% { opacity: 0.8; transform: translateY(-10px) scale(1.05); }
+}
+
+/* Encabezados */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  color: var(--text-white);
+}
+
+/* Párrafos */
+p {
+  margin-bottom: var(--space-md);
+  color: var(--text-gray);
+}
+
+/* Enlaces */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition);
+}
+a:hover {
+  color: var(--primary-purple);
+  text-decoration: underline;
+}
+
+/* Imágenes y medios */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Listas */
+ul, ol {
+  margin-bottom: var(--space-md);
+  padding-left: var(--space-lg);
+}
+ul {
+  list-style: disc;
+}
+ol {
+  list-style: decimal;
+}
+
+/* Tablas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-2xl);
+}
+th, td {
+  padding: var(--space-sm);
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Formularios básicos */
+input, button, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+button {
+  cursor: pointer;
+}
+
+/* === Contenedor global === */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
+}
+
+/* === Botón genérico === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  color: var(--text-white);
+  font-weight: 600;
+  transition: var(--transition);
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--glass-border);
+}
+
+.btn-primary {
+  background: var(--gradient-main);
+  border-color: transparent;
+}
+
+/* === Utilidades rápidas === */
+.text-center { text-align: center !important; }
+.hidden      { display: none !important; }
+.visible     { display: block !important; }
+.float-left  { float: left !important; }
+.float-right { float: right !important; }
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* === Helpers de espacio === */
+.mt-xs { margin-top: var(--space-xs); }
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+.mt-xl { margin-top: var(--space-xl); }
+
+.mb-xs { margin-bottom: var(--space-xs); }
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+.mb-lg { margin-bottom: var(--space-lg); }
+.mb-xl { margin-bottom: var(--space-xl); }
+
+.pt-xs { padding-top: var(--space-xs); }
+.pt-sm { padding-top: var(--space-sm); }
+.pt-md { padding-top: var(--space-md); }
+.pt-lg { padding-top: var(--space-lg); }
+.pt-xl { padding-top: var(--space-xl); }
+
+.pb-xs { padding-bottom: var(--space-xs); }
+.pb-sm { padding-bottom: var(--space-sm); }
+.pb-md { padding-bottom: var(--space-md); }
+.pb-lg { padding-bottom: var(--space-lg); }
+.pb-xl { padding-bottom: var(--space-xl); }
+
+/* === HERO SECTION === */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-2xl) 0;
+  margin-top: 80px;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  animation: heroGlow 8s ease-in-out infinite;
+}
+
+@keyframes heroGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  margin-bottom: var(--space-lg);
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  font-size: clamp(1.1rem, 4vw, 1.3rem);
+  color: var(--text-gray);
+  margin-bottom: var(--space-2xl);
+  font-weight: 400;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: var(--space-lg);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* === SECTION TITLES === */
+.section-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
